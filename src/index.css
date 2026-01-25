@@ -1,0 +1,72 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* ============================= */
+/* 🎨 THEME OFICIAL MECANOGRAF  */
+/* ============================= */
+
+@theme {
+  --color-background: #000F29;
+  --color-surface: #0A1F4D;
+  --color-accent: #F08A24;
+  --color-error: #7C1F31;
+  --color-text: #F5F7FA;
+  --color-muted: #9CA3AF;
+}
+
+/* ============================= */
+/* 🔧 VARIABLES BASE SHADCN     */
+/* ============================= */
+
+:root {
+  --radius: 0.625rem;
+
+  /* Estas NO se usan directamente, las pisamos abajo */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+}
+
+/* ============================= */
+/* 🌙 FORZAMOS DARK MODE BASE   */
+/* ============================= */
+
+html {
+  background-color: var(--color-background);
+  color: var(--color-text);
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-text);
+}
+
+/* ============================= */
+/* 🧱 BASE LAYER (SHADCN SAFE)  */
+/* ============================= */
+
+@layer base {
+  * {
+    border-color: var(--color-surface);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-text);
+  }
+}
+
+/* ============================= */
+/* 😈 ANIMACIÓN DE ERROR        */
+/* ============================= */
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  50% { transform: translateX(6px); }
+  75% { transform: translateX(-6px); }
+  100% { transform: translateX(0); }
+}
+
+.shake {
+  animation: shake 0.25s ease-in-out;
+}

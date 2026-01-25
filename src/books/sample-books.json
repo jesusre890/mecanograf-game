@@ -1,0 +1,17 @@
+{
+  "title": "Libro de prueba",
+  "chapters": [
+    {
+      "title": "Capítulo 1",
+      "sentences": [
+        "Esta es la primera oración.",
+        "Esta es la segunda oración.",
+        "Y esta es la tercera."
+      ]
+    },
+    {
+      "title": "Capítulo 2",
+      "sentences": ["Comienza un nuevo capítulo.", "La dificultad continúa."]
+    }
+  ]
+}
