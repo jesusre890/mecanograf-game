@@ -4,7 +4,8 @@ export type GameAction =
   | { type: "TYPE"; value: string }
   | { type: "RESET_INPUT" }
   | { type: "COMPLETE_SENTENCE" }
-  | { type: "ERROR" };
+  | { type: "ERROR" }
+  | { type: "CLEAR_STATUS" };
 
 export const initialGameState: GameState = {
   chapterIndex: 0,
@@ -35,8 +36,8 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     case "ERROR":
       return {
         ...state,
-        userInput: "",
-        sentenceIndex: state.lastCompletedSentenceIndex,
+        //userInput: "",
+        //sentenceIndex: state.lastCompletedSentenceIndex,
         status: "error",
       };
 
@@ -44,6 +45,12 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       return {
         ...state,
         userInput: "",
+        status: "typing",
+      };
+
+    case "CLEAR_STATUS":
+      return {
+        ...state,
         status: "typing",
       };
 

@@ -4,13 +4,23 @@ import { SentenceView } from "./components/SentenceView";
 import { useSettings } from "./hooks/useSettings";
 import { normalizeText } from "./game/game.utils";
 import { SettingsPanel } from "./components/SettingsPanel";
+import { ProgressBar } from "./components/ProgressBar";
+import { useEffect } from "react";
+import { useStats } from "./hooks/useStats";
 
 function App() {
   const { state, dispatch } = useGame();
   const { settings, toggle } = useSettings();
-
+  
   const currentSentence =
     book.chapters[state.chapterIndex].sentences[state.sentenceIndex];
+  
+  const { wpm, accuracy, errors } = useStats(
+    currentSentence,
+    state.userInput,
+    state.sentenceIndex,
+  );
+
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
@@ -27,25 +37,42 @@ function App() {
       punctuation: settings.requirePunctuation,
     });
 
+    // ⬇️ SIEMPRE dejamos que el input crezca
+    dispatch({ type: "TYPE", value });
+
+    // error → avisamos
     if (!normalizedTarget.startsWith(normalizedValue)) {
       dispatch({ type: "ERROR" });
       return;
     }
 
-    if (value === currentSentence) {
+    // ✅ oración completa
+    if (value === currentSentence || normalizedValue === normalizedTarget) {
       dispatch({ type: "COMPLETE_SENTENCE" });
-      return;
     }
-
-    if (normalizedValue === normalizedTarget) {
-      dispatch({ type: "COMPLETE_SENTENCE" });
-      return;
-    }
-
-    dispatch({ type: "TYPE", value });
   }
 
   const isError = state.status === "error";
+  const isCompleted = state.status === "completed";
+
+  useEffect(() => {
+    if (state.status === "completed") {
+      const t = setTimeout(() => {
+        dispatch({ type: "CLEAR_STATUS" });
+      }, 500);
+
+      return () => clearTimeout(t);
+    }
+
+    if (state.status === "error") {
+      const t = setTimeout(() => {
+        dispatch({ type: "RESET_INPUT" });
+        dispatch({ type: "CLEAR_STATUS" });
+      }, 150);
+
+      return () => clearTimeout(t);
+    }
+  }, [state.status, dispatch]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background text-text p-8">
@@ -56,8 +83,37 @@ function App() {
           MecanoGRAF
         </h1>
 
+        <div className="flex justify-center gap-6 text-muted">
+          <div>
+            <span className="text-accent font-semibold">{wpm}</span> WPM
+          </div>
+          <div>
+            <span className="text-accent font-semibold">{accuracy}%</span>{" "}
+            Precisión
+          </div>
+          <div>
+            <span className="text-accent font-semibold">{errors}</span> Errores
+          </div>
+        </div>
+
+        <ProgressBar
+          total={currentSentence.length}
+          current={state.userInput.length}
+        />
+
         {/* Oración objetivo */}
-        <SentenceView sentence={currentSentence} userInput={state.userInput} />
+        <SentenceView
+          sentence={currentSentence}
+          userInput={state.userInput}
+          isCompleted={isCompleted}
+          lastSentence={
+            state.status === "completed"
+              ? book.chapters[state.chapterIndex].sentences[
+                  state.sentenceIndex - 1
+                ]
+              : undefined
+          }
+        />
 
         {/* Input */}
         <input
