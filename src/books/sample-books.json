@@ -4,14 +4,17 @@
     {
       "title": "Capítulo 1",
       "sentences": [
-        "Esta es la primera oración.",
-        "Esta es la segunda oración.",
-        "Y esta es la tercera."
+        "Esta es la primera oración del ejercicio.",
+        "El objetivo es escribir con precisión y sin apurarse.",
+        "Cada error obliga a empezar de nuevo la oración."
       ]
     },
     {
       "title": "Capítulo 2",
-      "sentences": ["Comienza un nuevo capítulo.", "La dificultad continúa."]
+      "sentences": [
+        "A medida que avanzás, el texto se vuelve un poco más exigente.",
+        "La práctica constante mejora la velocidad y la concentración."
+      ]
     }
   ]
 }
