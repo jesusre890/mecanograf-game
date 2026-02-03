@@ -1,6 +1,6 @@
 import { useGame } from "./hooks/useGame";
-//import book from "./books/sample-books.json";
-import book from "./books/sample-short.json"
+import book from "./books/sample-books.json";
+//import book from "./books/sample-short.json"
 import { SentenceView } from "./components/SentenceView";
 import { useSettings } from "./hooks/useSettings";
 import { normalizeText } from "./game/game.utils";
@@ -11,6 +11,7 @@ import { useStats } from "./hooks/useStats";
 import { getRuns, saveRun } from "./lib/runsStorage";
 import { calculateScore } from "./game/scoring";
 import { formatDuration } from "./lib/utils";
+import { GameModeSelector } from "./components/GameModeSelector";
 
 function App() {
   const { state, dispatch } = useGame();
@@ -213,6 +214,16 @@ function App() {
           </button>
         </div>
       </div>
+    );
+  }
+
+  if (!state.mode) {
+    return (
+      <GameModeSelector
+        onSelect={(mode, timeLimit) =>
+          dispatch({ type: "SET_MODE", mode, timeLimit })
+        }
+      />
     );
   }
 

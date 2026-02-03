@@ -1,6 +1,7 @@
-import type { GameState } from "./game.types";
+import type { GameMode, GameState } from "./game.types";
 
 export type GameAction =
+  | { type: "SET_MODE"; mode: GameMode; timeLimit?: number }
   | { type: "TYPE"; value: string }
   | { type: "RESET_INPUT" }
   | {
@@ -10,9 +11,12 @@ export type GameAction =
     }
   | { type: "ERROR" }
   | { type: "CLEAR_STATUS" }
-  | { type: "RESET_RUN" };
+  | { type: "RESET_RUN" }
+  | { type: "SET_MODE"; mode: GameMode; timeLimit?: number };
 
 export const initialGameState: GameState = {
+  mode: null,
+  timeLimit: undefined,
   chapterIndex: 0,
   sentenceIndex: 0,
   lastCompletedSentenceIndex: 0,
@@ -32,6 +36,25 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       };
 
     case "COMPLETE_SENTENCE": {
+      // ♾️ MODO INFINITO
+      if (state.mode === "infinite") {
+        return {
+          ...state,
+          sentenceIndex: state.sentenceIndex + 1,
+          userInput: "",
+        };
+      }
+
+      // 🧪 PRÁCTICA (nunca termina)
+      if (state.mode === "practice") {
+        return {
+          ...state,
+          sentenceIndex: state.sentenceIndex + 1,
+          userInput: "",
+        };
+      }
+
+      // 📖 NORMAL (lo que ya tenías)
       if (action.isLast) {
         return {
           ...state,
@@ -59,12 +82,12 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     }
 
     case "ERROR":
-      return {
-        ...state,
-        //userInput: "",
-        //sentenceIndex: state.lastCompletedSentenceIndex,
-        status: "error",
-      };
+      // infinito y time_attack terminan
+      if (state.mode === "infinite" || state.mode === "time_attack") {
+        return { ...state, status: "finished" };
+      }
+
+      return { ...state, status: "error" };
 
     case "RESET_INPUT":
       return {
@@ -80,6 +103,12 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       };
     case "RESET_RUN":
       return initialGameState;
+    case "SET_MODE":
+      return {
+        ...initialGameState,
+        mode: action.mode,
+        timeLimit: action.timeLimit,
+      };
 
     default:
       return state;

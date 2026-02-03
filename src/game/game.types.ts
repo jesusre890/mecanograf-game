@@ -1,6 +1,10 @@
+export type GameMode = "normal" | "infinite" | "time_attack" | "practice";
+
 export type GameStatus = "typing" | "error" | "completed" | "finished";
 
 export type GameState = {
+  mode: GameMode | null;
+  timeLimit?: number;
   chapterIndex: number;
   sentenceIndex: number;
   lastCompletedSentenceIndex: number;
