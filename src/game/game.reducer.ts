@@ -3,7 +3,11 @@ import type { GameState } from "./game.types";
 export type GameAction =
   | { type: "TYPE"; value: string }
   | { type: "RESET_INPUT" }
-  | { type: "COMPLETE_SENTENCE" }
+  | {
+      type: "COMPLETE_SENTENCE";
+      isLast: boolean;
+      isLastSentence: boolean;
+    }
   | { type: "ERROR" }
   | { type: "CLEAR_STATUS" };
 
@@ -13,6 +17,7 @@ export const initialGameState: GameState = {
   lastCompletedSentenceIndex: 0,
   userInput: "",
   status: "typing",
+  runStartedAt: null,
 };
 
 export function gameReducer(state: GameState, action: GameAction): GameState {
@@ -22,16 +27,35 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         ...state,
         userInput: action.value,
         status: "typing",
+        runStartedAt: state.runStartedAt ?? Date.now(),
       };
 
-    case "COMPLETE_SENTENCE":
+    case "COMPLETE_SENTENCE": {
+      if (action.isLast) {
+        return {
+          ...state,
+          userInput: "",
+          status: "finished",
+        };
+      }
+
+      if (action.isLastSentence) {
+        return {
+          ...state,
+          chapterIndex: state.chapterIndex + 1,
+          sentenceIndex: 0,
+          userInput: "",
+          status: "completed",
+        };
+      }
+
       return {
         ...state,
-        lastCompletedSentenceIndex: state.sentenceIndex,
         sentenceIndex: state.sentenceIndex + 1,
         userInput: "",
         status: "completed",
       };
+    }
 
     case "ERROR":
       return {

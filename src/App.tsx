@@ -15,12 +15,20 @@ function App() {
   const currentSentence =
     book.chapters[state.chapterIndex].sentences[state.sentenceIndex];
   
-  const { wpm, accuracy, errors } = useStats(
+  const { wpm, peakWpm, accuracy, errors, time, avgWpm } = useStats(
     currentSentence,
     state.userInput,
     state.sentenceIndex,
+    state.status,
   );
 
+  const chapter = book.chapters[state.chapterIndex];
+
+  const isLastSentence = state.sentenceIndex === chapter.sentences.length - 1;
+
+  const isLastChapter = state.chapterIndex === book.chapters.length - 1;
+
+  const isLast = isLastSentence && isLastChapter;
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
@@ -48,7 +56,11 @@ function App() {
 
     // ✅ oración completa
     if (value === currentSentence || normalizedValue === normalizedTarget) {
-      dispatch({ type: "COMPLETE_SENTENCE" });
+      dispatch({
+        type: "COMPLETE_SENTENCE",
+        isLast,
+        isLastSentence,
+      });
     }
   }
 
@@ -73,6 +85,27 @@ function App() {
       return () => clearTimeout(t);
     }
   }, [state.status, dispatch]);
+
+  if (state.status === "finished") {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4 text-center">
+        <h1 className="text-3xl font-bold">Run finalizada 🏁</h1>
+
+        <div>Duración: {Math.round(time)}s</div>
+        <div>WPM promedio: {avgWpm}</div>
+        <div>WPM pico: {peakWpm}</div>
+        <div>Precisión: {accuracy}%</div>
+        <div>Errores totales: {errors}</div>
+
+        <button
+          className="mt-4 px-4 py-2 rounded bg-accent text-white"
+          onClick={() => window.location.reload()}
+        >
+          Volver a intentar
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background text-text p-8">

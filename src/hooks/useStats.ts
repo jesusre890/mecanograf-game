@@ -1,9 +1,11 @@
+import type { GameStatus } from "@/game/game.types";
 import { useEffect, useRef, useState } from "react";
 
 export function useStats(
   sentence: string,
   userInput: string,
   sentenceIndex: number,
+  status: GameStatus,
 ) {
   const startTimeRef = useRef<number | null>(null);
   const lastInputRef = useRef("");
@@ -12,6 +14,7 @@ export function useStats(
   const [typed, setTyped] = useState(0);
   const [correct, setCorrect] = useState(0);
   const [errors, setErrors] = useState(0);
+  const [peakWpm, setPeakWpm] = useState(0);
 
   // reset solo referencias al cambiar de oración
   useEffect(() => {
@@ -67,5 +70,19 @@ export function useStats(
   const wpm = minutes > 0 ? Math.round(correct / 5 / minutes) : 0;
   const accuracy = typed > 0 ? Math.round((correct / typed) * 100) : 100;
 
-  return { wpm, accuracy, errors };
+  useEffect(() => {
+    if (wpm > peakWpm) {
+      setPeakWpm(wpm);
+    }
+  }, [wpm, peakWpm]);
+  
+  useEffect(() => {
+    if (status === "finished") {
+      startTimeRef.current = null;
+    }
+  }, [status]);
+  
+  const avgWpm = time > 0 ? Math.round(typed / 5 / (time / 60)) : 0;
+
+  return { wpm, peakWpm, accuracy, errors, time, typed, avgWpm };
 }

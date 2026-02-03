@@ -1,4 +1,4 @@
-export type GameStatus = "typing" | "error" | "completed";
+export type GameStatus = "typing" | "error" | "completed" | "finished";
 
 export type GameState = {
   chapterIndex: number;
@@ -6,4 +6,5 @@ export type GameState = {
   lastCompletedSentenceIndex: number;
   userInput: string;
   status: GameStatus;
+  runStartedAt: number | null;
 };
