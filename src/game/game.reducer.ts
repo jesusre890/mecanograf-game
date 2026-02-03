@@ -9,7 +9,8 @@ export type GameAction =
       isLastSentence: boolean;
     }
   | { type: "ERROR" }
-  | { type: "CLEAR_STATUS" };
+  | { type: "CLEAR_STATUS" }
+  | { type: "RESET_RUN" };
 
 export const initialGameState: GameState = {
   chapterIndex: 0,
@@ -77,6 +78,8 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         ...state,
         status: "typing",
       };
+    case "RESET_RUN":
+      return initialGameState;
 
     default:
       return state;

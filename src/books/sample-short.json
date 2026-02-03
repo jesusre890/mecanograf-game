@@ -1,0 +1,13 @@
+{
+  "title": "Libro de prueba corto",
+  "chapters": [
+    {
+      "title": "Capítulo 1",
+      "sentences": [
+        "Oración 1",
+        "Oracion 2",
+        "Oracion 3"
+      ]
+    }
+  ]
+}

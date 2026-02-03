@@ -84,5 +84,18 @@ export function useStats(
   
   const avgWpm = time > 0 ? Math.round(typed / 5 / (time / 60)) : 0;
 
+  useEffect(() => {
+    if (status === "typing" && sentenceIndex === 0 && userInput === "") {
+      startTimeRef.current = null;
+      lastInputRef.current = "";
+
+      setTime(0);
+      setTyped(0);
+      setCorrect(0);
+      setErrors(0);
+      setPeakWpm(0);
+    }
+  }, [status, sentenceIndex, userInput]);
+
   return { wpm, peakWpm, accuracy, errors, time, typed, avgWpm };
 }
