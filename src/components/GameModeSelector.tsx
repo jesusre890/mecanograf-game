@@ -110,7 +110,7 @@ export function GameModeSelector({ onSelect }: Props) {
 
           {selected && !selected.disabled && (
             <Button
-              className="w-full mt-4"
+              className="w-full mt-4 bg-blue-800"
               size="lg"
               onClick={() => onSelect(selected.mode, selected.timeLimit)}
             >
