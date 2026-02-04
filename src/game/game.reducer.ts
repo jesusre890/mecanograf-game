@@ -12,7 +12,8 @@ export type GameAction =
   | { type: "ERROR" }
   | { type: "CLEAR_STATUS" }
   | { type: "RESET_RUN" }
-  | { type: "SET_MODE"; mode: GameMode; timeLimit?: number };
+  | { type: "SET_MODE"; mode: GameMode; timeLimit?: number }
+  | { type: "FINISH_PRACTICE" };
 
 export const initialGameState: GameState = {
   mode: null,
@@ -108,6 +109,11 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         ...initialGameState,
         mode: action.mode,
         timeLimit: action.timeLimit,
+      };
+    case "FINISH_PRACTICE":
+      return {
+        ...state,
+        status: "finished",
       };
 
     default:

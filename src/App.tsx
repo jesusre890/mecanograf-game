@@ -13,6 +13,7 @@ import { getRuns, saveRun } from "./lib/runsStorage";
 import { calculateScore } from "./game/scoring";
 import { formatDuration } from "./lib/utils";
 import { GameModeSelector } from "./components/GameModeSelector";
+import { TypingTips } from "./components/TypingTips";
 
 type CurrentPhrase = {
   text: string;
@@ -35,10 +36,9 @@ function App() {
   const infinitePoolRef = useRef(shuffleArray(infinitePhrases.sentences));
 
   function getCurrentPhrase(): CurrentPhrase {
-    if (state.mode === "infinite") {
+    if (state.mode === "infinite" || state.mode === "practice") {
       const pool = infinitePoolRef.current;
 
-      // si se agotó el pool → reshuffle
       if (state.sentenceIndex >= pool.length) {
         infinitePoolRef.current = shuffleArray(infinitePhrases.sentences);
       }
@@ -111,11 +111,11 @@ function App() {
       saveRun(run);
     }
 
-    if (state.mode === "infinite") {
+    if (state.mode === "infinite" || state.mode === "practice") {
       const run = {
         id,
         date: Date.now(),
-        mode: "infinite" as const,
+        mode: state.mode,
         avgWpm,
         peakWpm,
         accuracy,
@@ -157,6 +157,12 @@ function App() {
     // error → avisamos
     if (!normalizedTarget.startsWith(normalizedValue)) {
       dispatch({ type: "ERROR" });
+
+      // 🧪 práctica: seguimos escribiendo
+      if (state.mode === "practice") {
+        return;
+      }
+
       return;
     }
 
@@ -164,7 +170,7 @@ function App() {
     if (value === currentSentence || normalizedValue === normalizedTarget) {
       dispatch({
         type: "COMPLETE_SENTENCE",
-        isLast,
+        isLast: state.mode === "practice" ? false : isLast,
         isLastSentence,
       });
     }
@@ -198,7 +204,7 @@ function App() {
       .filter((r) => r.mode === state.mode)
       .sort((a, b) => {
         // ♾️ Infinite: primero más frases
-        if (state.mode === "infinite") {
+        if (state.mode === "infinite" || state.mode === "practice") {
           const aS = a.sentencesCompleted ?? 0;
           const bS = b.sentencesCompleted ?? 0;
 
@@ -328,14 +334,35 @@ function App() {
     );
   }
 
+  function getModeLabel(mode: typeof state.mode) {
+    switch (mode) {
+      case "normal":
+        return "Modo Normal 📖";
+      case "infinite":
+        return "Modo Infinito ♾️";
+      case "practice":
+        return "Modo Práctica 🧪";
+      case "time_attack":
+        return "Time Attack ⏱️";
+      default:
+        return "";
+    }
+  }
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background text-text p-8">
+      {state.mode && <TypingTips />}
       <SettingsPanel settings={settings} toggle={toggle} />
       <div className="max-w-2xl w-full space-y-6">
-        {/* Título */}
-        <h1 className="text-3xl font-bold text-center text-accent tracking-wide">
-          MecanoGRAF
-        </h1>
+        <div className="text-center space-y-1">
+          <h1 className="text-3xl font-bold text-accent tracking-wide">
+            MecanoGRAF
+          </h1>
+
+          {state.mode && (
+            <p className="text-sm text-muted">{getModeLabel(state.mode)}</p>
+          )}
+        </div>
 
         <div className="flex justify-center gap-6 text-muted">
           <div>
@@ -372,7 +399,11 @@ function App() {
           sentence={currentSentence}
           userInput={state.userInput}
           isCompleted={isCompleted}
-          author={state.mode === "infinite" ? currentPhrase.author : undefined}
+          author={
+            state.mode === "infinite" || state.mode === "practice"
+              ? currentPhrase.author
+              : undefined
+          }
           lastSentence={
             state.status === "completed"
               ? book.chapters[state.chapterIndex].sentences[
@@ -398,6 +429,23 @@ function App() {
           `}
           placeholder="Escribí la oración exactamente..."
         />
+
+        {state.mode === "practice" && (
+          <div className="flex justify-center pt-2">
+            <button
+              onClick={() => dispatch({ type: "FINISH_PRACTICE" })}
+              className="
+                text-sm px-4 py-2 rounded
+                border border-accent/40
+                text-accent
+                hover:bg-accent/10
+                transition
+              "
+            >
+              Terminar práctica, ya entré en calor 🔥
+            </button>
+          </div>
+        )}
 
         {/* Progreso */}
         <div className="text-center text-sm text-muted">

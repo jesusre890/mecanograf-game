@@ -18,6 +18,13 @@ type ModeOption = {
 
 const MODES: ModeOption[] = [
   {
+    mode: "practice",
+    label: "Práctica",
+    description: "Sin presión, solo practicar",
+    icon: "🧪",
+    disabled: false,
+  },
+  {
     mode: "normal",
     label: "Normal",
     description: "Jugá el libro completo, a tu ritmo",
@@ -39,10 +46,11 @@ const MODES: ModeOption[] = [
     disabled: true,
   },
   {
-    mode: "practice",
-    label: "Práctica",
-    description: "Sin presión, solo practicar",
-    icon: "🧪",
+    mode: "my_book",
+    label: "Libro cargado",
+    description: "Carga un libro y leelo escribiendo",
+    icon: "⏱️",
+    timeLimit: 60,
     disabled: true,
   },
 ];
@@ -99,7 +107,7 @@ export function GameModeSelector({ onSelect }: Props) {
 
                   {/* Badge Próximamente */}
                   {isDisabled && (
-                    <span className="text-[10px] px-2 py-1 rounded-full bg-muted text-muted-foreground">
+                    <span className="text-[10px] px-2 py-1 rounded-full text-amber-600">
                       Próximamente
                     </span>
                   )}
@@ -108,15 +116,21 @@ export function GameModeSelector({ onSelect }: Props) {
             })}
           </div>
 
-          {selected && !selected.disabled && (
-            <Button
-              className="w-full mt-4 bg-blue-800"
-              size="lg"
-              onClick={() => onSelect(selected.mode, selected.timeLimit)}
-            >
-              Empezar 🚀
-            </Button>
-          )}
+          <Button
+            className="w-full mt-4 bg-blue-800 disabled:opacity-50"
+            size="lg"
+            disabled={!selected || selected.disabled}
+            onClick={() => {
+              if (!selected || selected.disabled) return;
+              onSelect(selected.mode, selected.timeLimit);
+            }}
+          >
+            {!selected
+              ? "Elegí un modo para empezar"
+              : selected.disabled
+                ? "Modo no disponible"
+                : "Empezar 🚀"}
+          </Button>
         </CardContent>
       </Card>
     </div>

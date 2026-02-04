@@ -1,4 +1,4 @@
-export type GameMode = "normal" | "infinite" | "time_attack" | "practice";
+export type GameMode = "normal" | "infinite" | "time_attack" | "practice" | "my_book";
 
 export type GameStatus = "typing" | "error" | "completed" | "finished";
 
