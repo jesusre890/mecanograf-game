@@ -46,7 +46,7 @@ const MODES: ModeOption[] = [
     disabled: true,
   },
   {
-    mode: "my_book",
+    mode: "reading",
     label: "Libro cargado",
     description: "Carga un libro y leelo escribiendo",
     icon: "⏱️",

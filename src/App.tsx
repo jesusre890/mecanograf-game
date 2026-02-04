@@ -1,6 +1,6 @@
 import { useGame } from "./hooks/useGame";
-//import book from "./books/sample-books.json";
-import book from "./books/sample-short.json"
+import book from "./books/sample-books.json";
+//import book from "./books/sample-short.json"
 import infinitePhrases from "./books/infinite-phrases.json";
 import { SentenceView } from "./components/SentenceView";
 import { useSettings } from "./hooks/useSettings";
