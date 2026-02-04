@@ -1,9 +1,14 @@
+import type { GameMode } from "./game.types";
+
 export type RunResult = {
   id: string;
   date: number;
 
-  bookId: string;
-  bookTitle: string;
+  mode: GameMode;
+
+  // normal
+  bookId?: string;
+  bookTitle?: string;
 
   avgWpm: number;
   peakWpm: number;
@@ -12,4 +17,7 @@ export type RunResult = {
   time: number;
 
   score: number;
+
+  // infinite
+  sentencesCompleted?: number;
 };

@@ -3,6 +3,7 @@ interface Props {
   userInput: string;
   isCompleted?: boolean;
   lastSentence?: string;
+  author?: string;
 }
 
 export function SentenceView({
@@ -10,6 +11,7 @@ export function SentenceView({
   userInput,
   isCompleted,
   lastSentence,
+  author,
 }: Props) {
   return (
     <div className="relative">
@@ -61,6 +63,11 @@ export function SentenceView({
           );
         })}
       </div>
+      {author && (
+        <div className="mt-2 text-center text-sm text-muted italic tracking-wide animate-fade-in">
+          — {author}
+        </div>
+      )}
     </div>
   );
 }

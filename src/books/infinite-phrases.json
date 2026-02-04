@@ -1,0 +1,228 @@
+{
+  "id": "quotes-es",
+  "language": "es",
+  "type": "infinite",
+  "sentences": [
+    {
+      "text": "El verdadero viaje de descubrimiento no consiste en buscar nuevos paisajes.",
+      "author": "Marcel Proust",
+      "difficulty": 2
+    },
+    {
+      "text": "La simplicidad es la máxima sofisticación.",
+      "author": "Leonardo da Vinci",
+      "difficulty": 1
+    },
+    {
+      "text": "La disciplina es el puente entre metas y logros.",
+      "author": "Jim Rohn",
+      "difficulty": 3
+    },
+
+    {
+      "text": "El éxito es la suma de pequeños esfuerzos repetidos día tras día.",
+      "author": "Robert Collier",
+      "difficulty": 2
+    },
+    {
+      "text": "No cuentes los días, haz que los días cuenten.",
+      "author": "Muhammad Ali",
+      "difficulty": 1
+    },
+    {
+      "text": "La creatividad es la inteligencia divirtiéndose.",
+      "author": "Albert Einstein",
+      "difficulty": 1
+    },
+    {
+      "text": "El que tiene un porqué para vivir puede soportar casi cualquier cómo.",
+      "author": "Friedrich Nietzsche",
+      "difficulty": 3
+    },
+    {
+      "text": "La acción es la clave fundamental de todo éxito.",
+      "author": "Pablo Picasso",
+      "difficulty": 1
+    },
+    {
+      "text": "Nunca es demasiado tarde para ser lo que podrías haber sido.",
+      "author": "George Eliot",
+      "difficulty": 2
+    },
+    {
+      "text": "Haz hoy lo que otros no quieren, haz mañana lo que otros no pueden.",
+      "author": "Jerry Rice",
+      "difficulty": 3
+    },
+
+    {
+      "text": "El aprendizaje nunca agota la mente.",
+      "author": "Leonardo da Vinci",
+      "difficulty": 1
+    },
+    {
+      "text": "La constancia convierte lo ordinario en extraordinario.",
+      "author": "Anónimo",
+      "difficulty": 2
+    },
+    {
+      "text": "El fracaso es simplemente la oportunidad de comenzar de nuevo con más inteligencia.",
+      "author": "Henry Ford",
+      "difficulty": 3
+    },
+    {
+      "text": "El éxito no es definitivo, el fracaso no es fatal.",
+      "author": "Winston Churchill",
+      "difficulty": 2
+    },
+    {
+      "text": "La paciencia es amarga, pero su fruto es dulce.",
+      "author": "Jean-Jacques Rousseau",
+      "difficulty": 2
+    },
+    {
+      "text": "La motivación te pone en marcha, el hábito te mantiene.",
+      "author": "Jim Ryun",
+      "difficulty": 2
+    },
+    {
+      "text": "El conocimiento habla, pero la sabiduría escucha.",
+      "author": "Jimi Hendrix",
+      "difficulty": 2
+    },
+    {
+      "text": "El secreto de avanzar es empezar.",
+      "author": "Mark Twain",
+      "difficulty": 1
+    },
+
+    {
+      "text": "No hay viento favorable para quien no sabe a dónde va.",
+      "author": "Séneca",
+      "difficulty": 2
+    },
+    {
+      "text": "La excelencia no es un acto, es un hábito.",
+      "author": "Aristóteles",
+      "difficulty": 2
+    },
+    {
+      "text": "La práctica constante vence al talento sin disciplina.",
+      "author": "Anónimo",
+      "difficulty": 3
+    },
+    {
+      "text": "La mente es todo; en lo que piensas, te conviertes.",
+      "author": "Buda",
+      "difficulty": 2
+    },
+    {
+      "text": "El progreso ocurre fuera de la zona de confort.",
+      "author": "Anónimo",
+      "difficulty": 1
+    },
+    {
+      "text": "La concentración es la raíz de todo gran logro.",
+      "author": "Bruce Lee",
+      "difficulty": 2
+    },
+    {
+      "text": "Un pequeño avance diario sigue siendo un avance.",
+      "author": "Anónimo",
+      "difficulty": 1
+    },
+
+    {
+      "text": "La perseverancia transforma el fracaso en logro.",
+      "author": "Anónimo",
+      "difficulty": 2
+    },
+    {
+      "text": "No busques resultados distintos haciendo siempre lo mismo.",
+      "author": "Albert Einstein",
+      "difficulty": 2
+    },
+    {
+      "text": "La calidad nunca es un accidente.",
+      "author": "John Ruskin",
+      "difficulty": 2
+    },
+    {
+      "text": "Cada error es una lección disfrazada.",
+      "author": "Anónimo",
+      "difficulty": 1
+    },
+    {
+      "text": "La disciplina supera a la motivación cuando esta desaparece.",
+      "author": "Anónimo",
+      "difficulty": 3
+    },
+    {
+      "text": "La práctica deliberada crea maestría.",
+      "author": "Anónimo",
+      "difficulty": 2
+    },
+    {
+      "text": "La claridad precede a la velocidad.",
+      "author": "Anónimo",
+      "difficulty": 1
+    },
+
+    {
+      "text": "No se trata de tener tiempo, se trata de hacer tiempo.",
+      "author": "Anónimo",
+      "difficulty": 2
+    },
+    {
+      "text": "El enfoque determina la dirección.",
+      "author": "Tony Robbins",
+      "difficulty": 1
+    },
+    {
+      "text": "La repetición construye confianza.",
+      "author": "Anónimo",
+      "difficulty": 1
+    },
+    {
+      "text": "La mejora continua es mejor que la perfección tardía.",
+      "author": "Mark Twain",
+      "difficulty": 2
+    },
+    {
+      "text": "El dominio de una habilidad exige atención total.",
+      "author": "Anónimo",
+      "difficulty": 3
+    },
+    {
+      "text": "La constancia vence al entusiasmo pasajero.",
+      "author": "Anónimo",
+      "difficulty": 2
+    },
+    {
+      "text": "La velocidad llega después de la precisión.",
+      "author": "Anónimo",
+      "difficulty": 1
+    },
+
+    {
+      "text": "Cada tecla correcta es un paso adelante.",
+      "author": "MecanoGRAF",
+      "difficulty": 1
+    },
+    {
+      "text": "La concentración convierte el esfuerzo en progreso.",
+      "author": "MecanoGRAF",
+      "difficulty": 2
+    },
+    {
+      "text": "La práctica diaria construye fluidez.",
+      "author": "MecanoGRAF",
+      "difficulty": 1
+    },
+    {
+      "text": "La paciencia también se entrena.",
+      "author": "MecanoGRAF",
+      "difficulty": 1
+    }
+  ]
+}

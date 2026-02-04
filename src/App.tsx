@@ -1,24 +1,66 @@
 import { useGame } from "./hooks/useGame";
-import book from "./books/sample-books.json";
-//import book from "./books/sample-short.json"
+//import book from "./books/sample-books.json";
+import book from "./books/sample-short.json"
+import infinitePhrases from "./books/infinite-phrases.json";
 import { SentenceView } from "./components/SentenceView";
 import { useSettings } from "./hooks/useSettings";
 import { normalizeText } from "./game/game.utils";
 import { SettingsPanel } from "./components/SettingsPanel";
 import { ProgressBar } from "./components/ProgressBar";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useStats } from "./hooks/useStats";
 import { getRuns, saveRun } from "./lib/runsStorage";
 import { calculateScore } from "./game/scoring";
 import { formatDuration } from "./lib/utils";
 import { GameModeSelector } from "./components/GameModeSelector";
 
+type CurrentPhrase = {
+  text: string;
+  author?: string;
+};
+
 function App() {
   const { state, dispatch } = useGame();
   const { settings, toggle } = useSettings();
 
-  const currentSentence =
-    book.chapters[state.chapterIndex].sentences[state.sentenceIndex];
+  function shuffleArray<T>(array: T[]): T[] {
+    const copy = [...array];
+    for (let i = copy.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+    return copy;
+  }
+
+  const infinitePoolRef = useRef(shuffleArray(infinitePhrases.sentences));
+
+  function getCurrentPhrase(): CurrentPhrase {
+    if (state.mode === "infinite") {
+      const pool = infinitePoolRef.current;
+
+      // si se agotó el pool → reshuffle
+      if (state.sentenceIndex >= pool.length) {
+        infinitePoolRef.current = shuffleArray(infinitePhrases.sentences);
+      }
+
+      const phrase =
+        infinitePoolRef.current[
+          state.sentenceIndex % infinitePoolRef.current.length
+        ];
+
+      return {
+        text: phrase?.text ?? "",
+        author: phrase?.author,
+      };
+    }
+
+    return {
+      text: book.chapters[state.chapterIndex].sentences[state.sentenceIndex],
+    };
+  }
+
+  const currentPhrase = getCurrentPhrase();
+  const currentSentence = currentPhrase.text;
 
   const { wpm, peakWpm, accuracy, errors, time, avgWpm } = useStats(
     currentSentence,
@@ -27,35 +69,69 @@ function App() {
     state.status,
   );
 
-  const chapter = book.chapters[state.chapterIndex];
+  const isNormal = state.mode === "normal";
 
-  const isLastSentence = state.sentenceIndex === chapter.sentences.length - 1;
+  const chapter = isNormal ? book.chapters[state.chapterIndex] : null;
 
-  const isLastChapter = state.chapterIndex === book.chapters.length - 1;
+  const isLastSentence = isNormal
+    ? state.sentenceIndex === chapter!.sentences.length - 1
+    : false;
 
-  const isLast = isLastSentence && isLastChapter;
+  const isLastChapter = isNormal
+    ? state.chapterIndex === book.chapters.length - 1
+    : false;
+
+  const isLast = isNormal && isLastSentence && isLastChapter;
 
   useEffect(() => {
     if (state.status !== "finished") return;
 
-    const run = {
-      bookId: "sample-books",
-      bookTitle: book.title,
-      avgWpm,
-      peakWpm,
-      accuracy,
-      errors,
-      time,
-    };
-
     const id = crypto.randomUUID();
 
-    saveRun({
-      ...run,
-      id,
-      date: Date.now(),
-      score: calculateScore(run),
-    });
+    if (state.mode === "normal") {
+      const run = {
+        id,
+        date: Date.now(),
+        mode: "normal" as const,
+        bookId: "sample-books",
+        bookTitle: book.title,
+        avgWpm,
+        peakWpm,
+        accuracy,
+        errors,
+        time,
+        score: calculateScore({
+          avgWpm,
+          accuracy,
+          errors,
+          sentencesCompleted: state.sentenceIndex,
+        }),
+      };
+
+      saveRun(run);
+    }
+
+    if (state.mode === "infinite") {
+      const run = {
+        id,
+        date: Date.now(),
+        mode: "infinite" as const,
+        avgWpm,
+        peakWpm,
+        accuracy,
+        errors,
+        time,
+        sentencesCompleted: state.sentenceIndex,
+        score: calculateScore({
+          avgWpm,
+          accuracy,
+          errors,
+          sentencesCompleted: state.sentenceIndex,
+        }),
+      };
+
+      saveRun(run);
+    }
 
     localStorage.setItem("lastRunId", id);
   }, [state.status]);
@@ -119,15 +195,31 @@ function App() {
   // PANTALLA DEL FINAL 🏁
   if (state.status === "finished") {
     const runs = getRuns()
-      .filter((r) => r.bookId === "sample-books")
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 5);
+      .filter((r) => r.mode === state.mode)
+      .sort((a, b) => {
+        // ♾️ Infinite: primero más frases
+        if (state.mode === "infinite") {
+          const aS = a.sentencesCompleted ?? 0;
+          const bS = b.sentencesCompleted ?? 0;
+
+          if (bS !== aS) return bS - aS;
+          if (b.score !== a.score) return b.score - a.score;
+          return b.avgWpm - a.avgWpm;
+        }
+
+        // 📖 Normal: score desc
+        return b.score - a.score;
+      })
+      .slice(0, 10);
     const lastRunId = localStorage.getItem("lastRunId");
 
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-6 text-center">
         {/* Título */}
-        <h1 className="text-3xl font-bold">Run finalizada 🏁</h1>
+        <h1 className="text-3xl font-bold">
+          {state.mode === "normal" && "Run completada 📖"}
+          {state.mode === "infinite" && "Run infinita finalizada ♾️"}
+        </h1>
 
         {/* Stats de la run */}
         <div className="space-y-1 text-sm">
@@ -166,10 +258,11 @@ function App() {
           ) : (
             <div className="space-y-1 text-sm">
               {/* Header */}
-              <div className="grid grid-cols-5 px-3 text-xs text-muted">
+              <div className="grid grid-cols-[48px_1fr_1fr_1fr_1.2fr] px-3 text-xs text-muted">
                 <span>#</span>
                 <span>WPM</span>
-                <span>Precisión</span>
+                {state.mode === "normal" && <span>Precisión</span>}
+                {state.mode === "infinite" && <span>Frases</span>}
                 <span>Tiempo</span>
                 <span className="text-right">Score</span>
               </div>
@@ -183,16 +276,24 @@ function App() {
                     <li
                       key={run.id}
                       className={`
-                        grid grid-cols-5 items-center rounded px-3 py-2
+                        grid grid-cols-[48px_1fr_1fr_1fr_1.2fr]
+                        items-center rounded px-3 py-2
                         ${isLastRun ? "bg-accent/20 ring-1 ring-accent" : "bg-surface"}
                       `}
                     >
                       <span className="font-medium">
-                        #{i + 1} {isLastRun && "←"}
+                        #{i + 1}{" "}
+                        {isLastRun && (
+                          <span className="ml-1 text-accent">←</span>
+                        )}
                       </span>
+
                       <span>{run.avgWpm}</span>
-                      <span>{run.accuracy}%</span>
+
+                      <span>{run.sentencesCompleted ?? 0}</span>
+
                       <span>{formatDuration(run.time)}</span>
+
                       <span className="text-right font-semibold">
                         {run.score}
                       </span>
@@ -271,6 +372,7 @@ function App() {
           sentence={currentSentence}
           userInput={state.userInput}
           isCompleted={isCompleted}
+          author={state.mode === "infinite" ? currentPhrase.author : undefined}
           lastSentence={
             state.status === "completed"
               ? book.chapters[state.chapterIndex].sentences[
@@ -299,7 +401,16 @@ function App() {
 
         {/* Progreso */}
         <div className="text-center text-sm text-muted">
-          Capítulo {state.chapterIndex + 1} — Oración {state.sentenceIndex + 1}
+          {state.mode === "normal" && (
+            <>
+              Capítulo {state.chapterIndex + 1} — Oración{" "}
+              {state.sentenceIndex + 1}
+            </>
+          )}
+
+          {state.mode === "infinite" && (
+            <>Frases completadas: {state.sentenceIndex}</>
+          )}
         </div>
       </div>
     </div>

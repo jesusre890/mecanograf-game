@@ -28,7 +28,7 @@ const MODES: ModeOption[] = [
     label: "Infinito",
     description: "Frases sin fin hasta que fallás",
     icon: "♾️",
-    disabled: true,
+    disabled: false,
   },
   {
     mode: "time_attack",

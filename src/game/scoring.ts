@@ -1,9 +1,24 @@
-import type { RunResult } from "./run.types";
+export type ScoreInput = {
+  avgWpm: number;
+  accuracy: number;
+  errors: number;
+  sentencesCompleted?: number;
+};
 
-export function calculateScore(run: Omit<RunResult, "id" | "date" | "score">) {
-  const wpmScore = run.avgWpm * 10;
-  const accuracyScore = run.accuracy * 5;
-  const errorPenalty = run.errors * 20;
+export function calculateScore({
+  avgWpm,
+  accuracy,
+  errors,
+  sentencesCompleted = 0,
+}: ScoreInput) {
+  const wpmScore = avgWpm * 10;
+  const accuracyScore = accuracy * 5;
+  const errorPenalty = errors * 20;
 
-  return Math.max(0, Math.round(wpmScore + accuracyScore - errorPenalty));
+  const sentencesBonus = sentencesCompleted * 200;
+
+  return Math.max(
+    0,
+    Math.round(wpmScore + accuracyScore + sentencesBonus - errorPenalty),
+  );
 }
